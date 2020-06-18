@@ -13,7 +13,6 @@
           placeholder="Buscar ciudad"
           prepend-icon="mdi-map-marker"
           item-text="name"
-          item-value="id"
           hide-no-data
           return-object
           no-filter
@@ -90,11 +89,14 @@ export default {
 
   mounted() {
     import('./city.list.min.json').then(({default: json}) => { 	
-      this.allCities = json.map(city => {
-        const name = city.name + ", " + city.country;
-        return { ...city, ...{ name } };
-      });
-    }); 
+      this.allCities = json;
+    });
+    //   this.allCities = json.map(city => {
+    //     const name = city.name + ", " + city.country;
+    //     return name
+    //   })
+    //   console.log(JSON.stringify( [...new Set(this.allCities)]))
+    // }); 
     if (navigator.geolocation)
       this.cities.unshift({ name: "Usar ubicación actual", id: -1 });
   },
@@ -113,24 +115,24 @@ export default {
     handleChange() {
       this.loading = true;
       this.weather = null;
-      if (this.select.id === -1) {
+      if (typeof this.select === 'object' && this.select.id === -1) {
         navigator.geolocation.getCurrentPosition(pos => {
           this.getCurrentWeather(pos.coords.latitude, pos.coords.longitude);
         });
       } else
-        this.getCurrentWeather(this.select.coord.lat, this.select.coord.lon);
+        this.getCurrentWeather(this.select);
     },
     filterCities(value) {
       clearTimeout(this.debounceTimeout);
       this.debounceTimeout = setTimeout(() => {
         this.cities = this.allCities
           .filter(
-            city => city.name.toLowerCase().indexOf(value.toLowerCase()) == 0
+            city => city.toLowerCase().indexOf(value.toLowerCase()) == 0
           )
           .sort((a, b) =>
-            a.name.localeCompare(b.name, undefined, { ignorePunctuation: true })
+            a.localeCompare(b, undefined, { ignorePunctuation: true })
           )
-          .slice(0, 8);
+          .slice(0, 8)
         if (navigator.geolocation)
           this.cities.unshift({ name: "Usar ubicación actual", id: -1 });
       }, 500);
@@ -138,7 +140,9 @@ export default {
     },
     getCurrentWeather(lat, lon) {
       fetch(
+        lon && typeof lat === 'number' ? 
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=es&units=metric&appid=891832eb61fff63d300fe56e9a0f50c9`
+        : `https://api.openweathermap.org/data/2.5/weather?q=${lat}&lang=es&units=metric&appid=891832eb61fff63d300fe56e9a0f50c9`
       )
         .then(res => {
           return res.json();
