@@ -161,12 +161,12 @@ export default {
         date
           .getUTCHours()
           .toString()
-          .padStart(1, "0") +
+          .padStart(2, "0") +
         ":" +
         date
           .getUTCMinutes()
           .toString()
-          .padStart(1, "0")
+          .padStart(2, "0")
       );
     }
   }
