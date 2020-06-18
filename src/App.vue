@@ -148,7 +148,6 @@ export default {
           return res.json();
         })
         .then(res => {
-          console.log(res);
           this.weather = res;
           this.loading = null;
         });
