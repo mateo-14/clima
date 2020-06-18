@@ -73,8 +73,6 @@
 </template>
 
 <script>
-// import cities from "./city.list.min.json";
-
 export default {
   name: "App",
   data: () => {
