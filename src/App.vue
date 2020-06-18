@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <div class="text-h5">Weather demo APP</div>
+      <div class="text-h5">Clima</div>
     </v-app-bar>
     <v-main class="mt-4">
       <v-container>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import cities from "./city.list.min.json";
+// import cities from "./city.list.min.json";
 
 export default {
   name: "App",
@@ -89,13 +89,14 @@ export default {
       debounceTimeout: null
     };
   },
-  created() {
-    this.allCities = cities.map(city => {
-      const name = city.name + ", " + city.country;
-      return { ...city, ...{ name } };
-    });
-  },
+
   mounted() {
+    import('./city.list.min.json').then(({default: json}) => { 	
+      this.allCities = json.map(city => {
+        const name = city.name + ", " + city.country;
+        return { ...city, ...{ name } };
+      });
+    }); 
     if (navigator.geolocation)
       this.cities.unshift({ name: "Usar ubicación actual", id: -1 });
   },
@@ -134,7 +135,7 @@ export default {
           .slice(0, 8);
         if (navigator.geolocation)
           this.cities.unshift({ name: "Usar ubicación actual", id: -1 });
-      }, 400);
+      }, 500);
 
     },
     getCurrentWeather(lat, lon) {
